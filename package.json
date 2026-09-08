@@ -1,0 +1,32 @@
+{
+  "name": "scrap-sathi",
+  "version": "1.0.0",
+  "description": "Scrap Sathi - SIH 2026 Problem Statement 26229: Kabadiwala Connect (Ministry of Mines / JNARDDC)",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "server": "node server/server.js",
+    "client": "npm --prefix client run dev",
+    "dev": "node dev-runner.js",
+    "build": "npm --prefix client run build",
+    "install-all": "npm install && npm --prefix server install && npm --prefix client install",
+    "cap:sync": "npm --prefix client run build && npx --prefix client cap sync",
+    "cap:open:android": "npx --prefix client cap open android"
+  },
+  "keywords": [
+    "sih2026",
+    "kabadiwala-connect",
+    "ministry-of-mines",
+    "jnarddc",
+    "e-waste",
+    "critical-minerals",
+    "lithium",
+    "cobalt",
+    "mern",
+    "ai-ml",
+    "cybersecurity",
+    "android"
+  ],
+  "author": "Scrap Sathi Team",
+  "license": "MIT"
+}
