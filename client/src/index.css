@@ -310,26 +310,26 @@ h1, h2, h3, h4, .font-heading {
   box-shadow: 0 0 0 2px var(--primary), 0 6px 20px rgba(13, 148, 136, 0.2);
 }
 
-/* Animations */
+/* Animations & Keyframes */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.95); }
+  70% { transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
-/* Camera Scanning Beam Effect */
-.scan-beam {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent 0%, #0d9488 50%, transparent 100%);
-  box-shadow: 0 0 15px #0d9488, 0 0 30px #0d9488;
-  animation: scanMove 2s cubic-bezier(0.4, 0, 0.6, 1) infinite alternate;
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(13, 148, 136, 0); }
+}
+
+@keyframes pulseGold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.4); }
+  50% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); }
 }
 
 @keyframes scanMove {
@@ -337,10 +337,134 @@ h1, h2, h3, h4, .font-heading {
   to { top: 95%; }
 }
 
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pop-in {
+  animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+.pulse-glow-teal {
+  animation: pulseGlow 2.5s infinite;
+}
+
+.pulse-glow-gold {
+  animation: pulseGold 2.5s infinite;
+}
+
+/* Background Mesh Ambient Blurs */
+body::before {
+  content: '';
+  position: fixed;
+  top: -100px;
+  left: -100px;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(204, 251, 241, 0.7) 0%, rgba(204, 251, 241, 0) 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -100px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(224, 242, 254, 0.8) 0%, rgba(224, 242, 254, 0) 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Glassmorphism Navigation & Cards */
+.nav-glass {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+}
+
+.bottom-nav-glass {
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid rgba(226, 232, 240, 0.9) !important;
+}
+
+/* Category & Metal Card Interactive Hover */
+.category-card {
+  position: relative;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.category-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 14px 30px -6px rgba(13, 148, 136, 0.22);
+}
+
+.category-card:active {
+  transform: translateY(-2px) scale(0.99);
+}
+
+.category-card.selected {
+  border-color: var(--primary);
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+  box-shadow: 0 0 0 2.5px var(--primary), 0 8px 24px rgba(13, 148, 136, 0.2);
+}
+
+/* Tactile Navigation Tabs */
+.nav-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-tab-btn:hover {
+  transform: translateY(-1px);
+}
+
+.nav-tab-btn:active {
+  transform: scale(0.96);
+}
+
 /* Spin Utility */
 .spin {
   animation: spin 1s linear infinite;
 }
+
 
 @keyframes spin {
   from { transform: rotate(0deg); }
