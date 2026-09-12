@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useOffline } from '../context/OfflineContext';
@@ -46,6 +46,12 @@ export const CollectorApp = ({ activeTab, setActiveTab }) => {
   const [detectedCategory, setDetectedCategory] = useState('battery');
   const [aiConfidence, setAiConfidence] = useState(94);
   const [aiAnalysis, setAiAnalysis] = useState(null);
+
+  // Real Camera State
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const [cameraError, setCameraError] = useState('');
 
   // Weight & Price Calculator State
   const [weightInput, setWeightInput] = useState('8.5');
@@ -177,18 +183,109 @@ export const CollectorApp = ({ activeTab, setActiveTab }) => {
     });
   };
 
-  // Simulated AI Camera Scan
-  const handleSimulateScan = (category = 'battery') => {
+  // ============================================================
+  // REAL CAMERA SCAN
+  // Opens the laptop/phone camera, captures a frame, then runs
+  // the existing demo AI result flow. The camera itself is real;
+  // the classification is still demo logic until an AI model/API
+  // is connected to the captured image.
+  // ============================================================
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+
+    setCameraOpen(false);
+  };
+
+  const startCamera = async () => {
+    setCameraError('');
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setCameraError('Camera access is not supported by this browser. Please use the latest Chrome or Edge.');
+      return;
+    }
+
+    try {
+      stopCamera();
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: 'environment' },
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        },
+        audio: false
+      });
+
+      streamRef.current = stream;
+      setCameraOpen(true);
+    } catch (error) {
+      console.error('Camera error:', error);
+
+      if (error?.name === 'NotAllowedError' || error?.name === 'PermissionDeniedError') {
+        setCameraError('Camera permission was blocked. Click the camera icon in the browser address bar and allow camera access, then try again.');
+      } else if (error?.name === 'NotFoundError' || error?.name === 'DevicesNotFoundError') {
+        setCameraError('No camera was found. Connect a webcam or check that your laptop camera is enabled.');
+      } else {
+        setCameraError('Unable to open the camera. Please close other apps using the camera and try again.');
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (cameraOpen && videoRef.current && streamRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+      videoRef.current.play().catch(() => {});
+    }
+  }, [cameraOpen]);
+
+  useEffect(() => {
+    return () => stopCamera();
+  }, []);
+
+  useEffect(() => {
+    if (activeTab !== 'scan_identify' && streamRef.current) {
+      stopCamera();
+    }
+  }, [activeTab]);
+
+  const handleCapturePhoto = () => {
+    const video = videoRef.current;
+
+    if (!video || !video.videoWidth || !video.videoHeight) {
+      setCameraError('Camera is still starting. Please wait for the live preview and try again.');
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const imageData = canvas.toDataURL('image/jpeg', 0.9);
+    setScannedImage(imageData);
+    stopCamera();
+    setCameraError('');
     setIsScanning(true);
+
+    // Current project has demo classification logic.
+    // Replace this block later with the real AI image-classification API.
     setTimeout(() => {
       setIsScanning(false);
-      setDetectedCategory(category);
+      setDetectedCategory('battery');
       setAiConfidence(96);
-      setScannedImage('https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&auto=format&fit=crop&q=60');
-      
-      const categoryName = t(`cat_${category}`);
+
+      const categoryName = t('cat_battery');
       narrate(language === 'mr' ? `सापडले: ${categoryName}. किंमत मोजली जात आहे.` : `पहचान: ${categoryName}. मूल्य आंका जा रहा है.`);
-      
+
       setActiveTab('weight_price');
     }, 1200);
   };
@@ -388,7 +485,7 @@ export const CollectorApp = ({ activeTab, setActiveTab }) => {
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t('scanSubtitle')}</p>
           </div>
 
-          {/* Viewfinder simulation */}
+          {/* REAL CAMERA VIEWFINDER */}
           <div
             className="glass-panel"
             style={{
@@ -401,16 +498,35 @@ export const CollectorApp = ({ activeTab, setActiveTab }) => {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              background: scannedImage ? `url(${scannedImage}) center/cover no-repeat` : 'radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, rgba(8, 12, 20, 0.95) 80%)'
+              background: scannedImage
+                ? `url(${scannedImage}) center/cover no-repeat`
+                : 'radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, rgba(8, 12, 20, 0.95) 80%)'
             }}
           >
+            {cameraOpen && (
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block'
+                }}
+              />
+            )}
+
             {isScanning ? (
-              <div style={{ textAlign: 'center', zIndex: 10 }}>
-                <div style={{ width: '60px', height: '60px', borderRadius: '50%', border: '4px solid var(--primary)', borderTopColor: 'transparent', animation: 'spin 1s linear infinite', margin: '0 auto 14px auto' }} />
-                <div style={{ fontSize: '1.1rem', fontWeight: '700', color: '#ffffff' }}>AI Detecting Critical Minerals...</div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--copper)' }}>Analyzing component density & hazardous markers</div>
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0, 0, 0, 0.48)', textAlign: 'center', zIndex: 10 }}>
+                <div>
+                  <div style={{ width: '60px', height: '60px', borderRadius: '50%', border: '4px solid var(--primary)', borderTopColor: 'transparent', animation: 'spin 1s linear infinite', margin: '0 auto 14px auto' }} />
+                  <div style={{ fontSize: '1.1rem', fontWeight: '700', color: '#ffffff' }}>AI Detecting Critical Minerals...</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--copper)' }}>Analyzing captured e-waste image</div>
+                </div>
               </div>
-            ) : (
+            ) : !cameraOpen && !scannedImage ? (
               <div style={{ textAlign: 'center', padding: '20px', zIndex: 10 }}>
                 <div style={{ width: '70px', height: '70px', borderRadius: '20px', background: 'var(--primary-glow)', border: '1px solid var(--primary)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px' }}>
                   <Camera size={36} color="var(--primary)" />
@@ -418,44 +534,66 @@ export const CollectorApp = ({ activeTab, setActiveTab }) => {
                 <h3 style={{ fontSize: '1.15rem', color: '#ffffff', marginBottom: '4px' }}>Point Camera at E-Waste</h3>
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Batteries, Circuit Boards, Copper Cables, Motors</p>
               </div>
-            )}
+            ) : null}
 
             {/* Viewfinder Target Reticle Overlay */}
-            <div style={{ position: 'absolute', inset: '24px', border: '2px solid rgba(255, 255, 255, 0.2)', borderRadius: '16px', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', inset: '24px', border: '2px solid rgba(255, 255, 255, 0.25)', borderRadius: '16px', pointerEvents: 'none', zIndex: 5 }} />
           </div>
 
-          {/* Scan Simulation Buttons */}
-          <div style={{ marginTop: '16px' }}>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '8px', textAlign: 'center' }}>
-              🎯 Click any item below to simulate real-time AI computer vision detection:
+          {/* Camera Error */}
+          {cameraError && (
+            <div style={{ marginTop: '12px', padding: '12px 14px', borderRadius: '12px', background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.35)', color: '#fca5a5', fontSize: '0.8rem', lineHeight: '1.45', textAlign: 'center' }}>
+              ⚠️ {cameraError}
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-              <button onClick={() => handleSimulateScan('battery')} className="btn-tactile btn-glass" style={{ padding: '10px 6px', fontSize: '0.78rem', flexDirection: 'column' }}>
-                <Battery size={20} color="#10b981" />
-                <span>Li-Ion Battery</span>
+          )}
+
+          {/* REAL CAMERA CONTROLS */}
+          <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
+            {!cameraOpen && !isScanning && (
+              <button
+                onClick={startCamera}
+                className="btn-tactile btn-primary"
+                style={{ flex: 1, padding: '15px', fontSize: '1rem' }}
+              >
+                <Camera size={21} />
+                <span>{scannedImage ? 'Scan Again' : 'Open Camera'}</span>
               </button>
-              <button onClick={() => handleSimulateScan('circuit_board')} className="btn-tactile btn-glass" style={{ padding: '10px 6px', fontSize: '0.78rem', flexDirection: 'column' }}>
-                <Cpu size={20} color="#f59e0b" />
-                <span>PCB Motherboard</span>
-              </button>
-              <button onClick={() => handleSimulateScan('cable')} className="btn-tactile btn-glass" style={{ padding: '10px 6px', fontSize: '0.78rem', flexDirection: 'column' }}>
-                <Zap size={20} color="#38bdf8" />
-                <span>Copper Cable</span>
-              </button>
-              <button onClick={() => handleSimulateScan('motor')} className="btn-tactile btn-glass" style={{ padding: '10px 6px', fontSize: '0.78rem', flexDirection: 'column' }}>
-                <Coins size={20} color="#c084fc" />
-                <span>Electric Motor</span>
-              </button>
-              <button onClick={() => handleSimulateScan('screen')} className="btn-tactile btn-glass" style={{ padding: '10px 6px', fontSize: '0.78rem', flexDirection: 'column' }}>
-                <Flame size={20} color="#f43f5e" />
-                <span>CRT / Display</span>
-              </button>
-              <button onClick={() => handleSimulateScan('plastic')} className="btn-tactile btn-glass" style={{ padding: '10px 6px', fontSize: '0.78rem', flexDirection: 'column' }}>
-                <Sparkles size={20} color="#a3e635" />
-                <span>E-Plastic</span>
-              </button>
-            </div>
+            )}
+
+            {cameraOpen && !isScanning && (
+              <>
+                <button
+                  onClick={handleCapturePhoto}
+                  className="btn-tactile btn-primary"
+                  style={{ flex: 1, padding: '15px', fontSize: '1rem' }}
+                >
+                  <Camera size={21} />
+                  <span>Capture & Scan</span>
+                </button>
+                <button
+                  onClick={stopCamera}
+                  className="btn-tactile btn-glass"
+                  style={{ padding: '15px 18px', fontSize: '0.9rem' }}
+                >
+                  Close
+                </button>
+              </>
+            )}
           </div>
+
+          {scannedImage && !cameraOpen && !isScanning && (
+            <button
+              onClick={() => {
+                setScannedImage(null);
+                setCameraError('');
+                startCamera();
+              }}
+              className="btn-tactile btn-glass"
+              style={{ width: '100%', marginTop: '10px', padding: '12px', fontSize: '0.88rem' }}
+            >
+              <RefreshCw size={17} /> Retake Photo
+            </button>
+          )}
         </div>
       )}
 
