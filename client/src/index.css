@@ -407,6 +407,21 @@ body::after {
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-top: 1px solid rgba(226, 232, 240, 0.9) !important;
+  padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
+}
+
+/* Responsive Grid Utility */
+.grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 480px) {
+  .grid-responsive {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }
 
 /* Category & Metal Card Interactive Hover */
@@ -464,7 +479,6 @@ body::after {
 .spin {
   animation: spin 1s linear infinite;
 }
-
 
 @keyframes spin {
   from { transform: rotate(0deg); }
