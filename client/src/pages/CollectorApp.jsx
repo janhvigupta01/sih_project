@@ -636,6 +636,193 @@ export const CollectorApp = ({ activeTab, setActiveTab }) => {
       )}
 
       {/* ============================================================ */}
+      {/* SCREEN: BEST RECYCLER MATCH & CONFIRMATION                   */}
+      {/* ============================================================ */}
+      {activeTab === 'best_match' && (
+        <div className="animate-fade-in" style={{ maxWidth: '680px', margin: '0 auto' }}>
+          {/* Header Banner */}
+          <div style={{ background: '#162544', borderRadius: '20px', padding: '20px 24px', color: '#ffffff', marginBottom: '20px', boxShadow: '0 8px 24px rgba(22, 37, 68, 0.2)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <span style={{ fontSize: '0.72rem', color: '#38bdf8', fontWeight: '800', letterSpacing: '0.05em' }}>CPCB VERIFIED RECYCLERS</span>
+                <h1 style={{ fontSize: '1.4rem', color: '#ffffff', margin: '2px 0 0 0' }}>Best Recycler Match</h1>
+              </div>
+              <span className="badge badge-primary" style={{ background: '#d1fae5', color: '#047857', border: 'none', fontWeight: '800' }}>
+                <MapPin size={14} /> Within 5 km
+              </span>
+            </div>
+          </div>
+
+          {/* Recycler List */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '20px' }}>
+            {(matchedRecyclers.length > 0 ? matchedRecyclers : [
+              {
+                id: 'user_recycler_1',
+                name: 'EcoMetals Green Refining Pvt Ltd',
+                cpcbRegNumber: 'CPCB/EW-REG/MH/2024/9912',
+                serviceArea: 'Mumbai Metropolitan Region',
+                distanceKm: 2.4,
+                rating: 4.9,
+                isApprovedGovt: true,
+                specializationBonus: '₹221 Specialist Bonus Included'
+              },
+              {
+                id: 'user_recycler_2',
+                name: 'RareEarth Hydrometallurgy Works',
+                cpcbRegNumber: 'CPCB/EW-REG/MH/2023/4512',
+                serviceArea: 'Pune Industrial Area',
+                distanceKm: 4.8,
+                rating: 4.8,
+                isApprovedGovt: true,
+                specializationBonus: 'Standard Rate'
+              }
+            ]).map((rec, idx) => (
+              <div
+                key={rec.id || idx}
+                className="category-card"
+                style={{
+                  borderColor: selectedRecycler?.id === rec.id || idx === 0 ? '#0d9488' : '#e2e8f0',
+                  background: selectedRecycler?.id === rec.id || idx === 0 ? '#f0fdf4' : '#ffffff'
+                }}
+                onClick={() => setSelectedRecycler(rec)}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <h3 style={{ fontSize: '1.15rem', color: '#0f172a', margin: 0 }}>{rec.name}</h3>
+                      <CheckCircle size={18} color="#059669" />
+                    </div>
+                    <span style={{ fontSize: '0.75rem', color: '#0d9488', fontWeight: '700' }}>
+                      {rec.cpcbRegNumber || 'CPCB Approved Dismantler'}
+                    </span>
+                  </div>
+                  <span className="badge badge-copper" style={{ fontWeight: '800' }}>
+                    ★ {rec.rating || '4.9'} ({rec.distanceKm || '2.4'} km)
+                  </span>
+                </div>
+
+                <p style={{ fontSize: '0.82rem', color: '#475569', margin: '4px 0 12px 0' }}>
+                  📍 {rec.serviceArea || 'Local Collection Center'} • Hydrometallurgy Certified
+                </p>
+
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #e2e8f0', paddingTop: '10px' }}>
+                  <div>
+                    <span style={{ fontSize: '0.72rem', color: '#64748b' }}>Estimated Payout</span>
+                    <div style={{ fontSize: '1.35rem', fontWeight: '800', color: '#0d9488' }}>
+                      ₹{pricingEstimate?.grandTotalWithBonus || Math.round((parseFloat(weightInput) || 8.5) * 285)}
+                    </div>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleConfirmBatch();
+                    }}
+                    className="btn-tactile btn-primary"
+                    style={{ padding: '10px 18px', fontSize: '0.9rem' }}
+                  >
+                    <span>Confirm Lot Handover</span>
+                    <ArrowRight size={16} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button onClick={() => handleConfirmBatch()} className="btn-tactile btn-copper pulse-glow-gold" style={{ width: '100%', padding: '16px', fontSize: '1.05rem' }}>
+            <Zap size={20} />
+            <span>Generate Handover OTP Code →</span>
+          </button>
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* SCREEN: HANDOVER PROOF & DIGITAL OTP                          */}
+      {/* ============================================================ */}
+      {activeTab === 'handover_proof' && (
+        <div className="animate-fade-in" style={{ maxWidth: '640px', margin: '0 auto', textAlign: 'center' }}>
+          <div style={{ background: '#ffffff', borderRadius: '24px', padding: '24px', border: '2px solid #0d9488', boxShadow: '0 10px 30px rgba(13, 148, 136, 0.15)', marginBottom: '20px' }}>
+            <span className="badge badge-primary" style={{ background: '#ccfbf1', color: '#0f766e', border: 'none', marginBottom: '8px' }}>
+              BATCH CREATED & SEALED
+            </span>
+            <h2 style={{ fontSize: '1.4rem', color: '#0f172a', margin: '4px 0' }}>Handover Verification Code</h2>
+            <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '16px' }}>
+              Show this 4-digit code to the recycler upon physical weight verification.
+            </p>
+
+            <div style={{ background: '#162544', color: '#eab308', fontSize: '3.2rem', fontWeight: '900', letterSpacing: '0.25em', padding: '16px 24px', borderRadius: '20px', display: 'inline-block', boxShadow: '0 8px 24px rgba(22, 37, 68, 0.25)', marginBottom: '16px' }}>
+              {activeLot?.handoverOtp || '4892'}
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: '#059669', fontSize: '0.82rem', fontWeight: '700' }}>
+              <ShieldCheck size={18} />
+              <span>SHA-256 Ledger Cryptographically Sealed</span>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button
+              onClick={() => setViewingCertificate({
+                certificateNumber: 'EPR-IN-2026-9921',
+                collectorName: user?.name || 'Ramesh Kumar',
+                recyclerName: 'EcoMetals Green Refining Pvt Ltd',
+                materialType: t(`cat_${detectedCategory}`) || 'Lithium Battery',
+                weightKg: parseFloat(weightInput) || 8.5,
+                carbonOffsetKg: 42.8,
+                issuedAt: new Date().toLocaleDateString()
+              })}
+              className="btn-tactile btn-navy"
+              style={{ flex: 1, padding: '14px' }}
+            >
+              <Award size={18} /> View EPR Certificate
+            </button>
+            <button onClick={() => setActiveTab('price_board')} className="btn-tactile btn-primary" style={{ flex: 1, padding: '14px' }}>
+              Back to Home
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* SCREEN: MY KHATA & EARNINGS                                  */}
+      {/* ============================================================ */}
+      {activeTab === 'my_khata' && (
+        <div className="animate-fade-in" style={{ maxWidth: '680px', margin: '0 auto' }}>
+          <div style={{ background: '#162544', borderRadius: '24px', padding: '24px', color: '#ffffff', boxShadow: '0 8px 24px rgba(22, 37, 68, 0.2)', marginBottom: '20px' }}>
+            <span style={{ fontSize: '0.72rem', color: '#38bdf8', fontWeight: '800', letterSpacing: '0.05em' }}>DIGITAL KHATA</span>
+            <h1 style={{ fontSize: '1.4rem', color: '#ffffff', margin: '2px 0 16px 0' }}>My Earnings & Scale Slips</h1>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+              <div style={{ background: 'rgba(255,255,255,0.1)', padding: '14px', borderRadius: '16px' }}>
+                <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Total Earned</span>
+                <div style={{ fontSize: '1.6rem', fontWeight: '800', color: '#34d399' }}>₹{totalEarned.toLocaleString()}</div>
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.1)', padding: '14px', borderRadius: '16px' }}>
+                <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Pending Payouts</span>
+                <div style={{ fontSize: '1.6rem', fontWeight: '800', color: '#fef08a' }}>₹{totalOwed.toLocaleString()}</div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="glass-panel" style={{ padding: '16px', borderRadius: '18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <h3 style={{ fontSize: '1.05rem', color: '#0f172a', margin: 0 }}>BATCH-8821 • 4.5 kg PCB</h3>
+                <span style={{ fontSize: '0.78rem', color: '#0d9488', fontWeight: '700' }}>✔ Paid via Direct UPI</span>
+              </div>
+              <div style={{ fontSize: '1.3rem', fontWeight: '800', color: '#0d9488' }}>+₹1,510</div>
+            </div>
+            <div className="glass-panel" style={{ padding: '16px', borderRadius: '18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <h3 style={{ fontSize: '1.05rem', color: '#0f172a', margin: 0 }}>BATCH-8819 • 12 kg Copper Wire</h3>
+                <span style={{ fontSize: '0.78rem', color: '#0d9488', fontWeight: '700' }}>✔ Paid via Direct Cash</span>
+              </div>
+              <div style={{ fontSize: '1.3rem', fontWeight: '800', color: '#0d9488' }}>+₹8,160</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================ */}
       {/* SCREEN 4: MY COLLECTION BATCHES (MATCHING SCREENSHOT 4)        */}
       {/* ============================================================ */}
       {activeTab === 'pool_team' && (

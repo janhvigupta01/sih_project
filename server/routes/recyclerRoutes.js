@@ -7,6 +7,7 @@ const {
 } = require('../controllers/recyclerController');
 const { authenticateToken } = require('../middleware/authMiddleware');
 
+router.get('/', getApprovedRecyclers);
 router.get('/approved', getApprovedRecyclers);
 router.get('/incoming', authenticateToken, getIncomingBatches);
 router.put('/profile', authenticateToken, updateRecyclerProfile);

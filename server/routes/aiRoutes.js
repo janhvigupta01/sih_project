@@ -9,6 +9,7 @@ const {
 
 router.post('/classify-image', classifyImage);
 router.post('/estimate-metals', handleEstimateMetals);
+router.post('/estimate', handleEstimateMetals);
 router.post('/predict-price', handlePredictPrice);
 router.post('/check-fairness', handleCheckFairness);
 
