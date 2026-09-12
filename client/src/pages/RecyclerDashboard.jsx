@@ -21,7 +21,7 @@ import {
 
 export const RecyclerDashboard = () => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('incoming'); // 'incoming' | 'verify' | 'certificates' | 'reports' | 'license'
+  const [activeTab, setActiveTab] = useState('incoming');
   const [incomingBatches, setIncomingBatches] = useState([]);
   const [metrics, setMetrics] = useState({ totalIntakeKg: 28.5, totalPayoutINR: 7702, completedCount: 3, pendingCount: 2 });
   const [certificates, setCertificates] = useState([]);
@@ -31,9 +31,7 @@ export const RecyclerDashboard = () => {
   const [viewingCertificate, setViewingCertificate] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // License verification form state
   const [cpcbNumber, setCpcbNumber] = useState(user?.cpcbRegNumber || 'CPCB/EW-REG/MH/2024/9912');
-  const [specializations, setSpecializations] = useState(['battery', 'circuit_board']);
   const [companyName, setCompanyName] = useState(user?.companyName || 'EcoMetals Green Refining Pvt Ltd');
 
   useEffect(() => {
@@ -107,81 +105,75 @@ export const RecyclerDashboard = () => {
 
   return (
     <div className="app-container">
-      {/* Top Banner */}
-      <div className="glass-panel" style={{ padding: '20px 24px', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{ width: '50px', height: '50px', borderRadius: '14px', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Factory size={28} color="#0b0f19" />
+      {/* Top Royal Navy Banner */}
+      <div style={{ background: '#162544', borderRadius: '24px', padding: '24px', marginBottom: '20px', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px', boxShadow: '0 8px 25px rgba(22, 37, 68, 0.2)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ width: '54px', height: '54px', borderRadius: '16px', background: 'linear-gradient(135deg, #eab308 0%, #ca8a04 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Factory size={30} color="#0f172a" />
           </div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <h1 style={{ fontSize: '1.45rem', color: '#ffffff', margin: 0 }}>{companyName}</h1>
-              <span className="badge badge-primary">CPCB APPROVED</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <h1 style={{ fontSize: '1.5rem', color: '#ffffff', margin: 0 }}>{companyName}</h1>
+              <span className="badge badge-primary" style={{ background: '#ccfbf1', color: '#0f766e', border: 'none', fontWeight: '800' }}>CPCB APPROVED</span>
             </div>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: '2px 0 0 0' }}>
+            <p style={{ fontSize: '0.82rem', color: '#94a3b8', margin: '4px 0 0 0' }}>
               Reg: {cpcbNumber} · Specialized in Lithium, Cobalt & Neodymium Hydrometallurgy
             </p>
           </div>
         </div>
 
         {/* Quick Tabs */}
-        <div style={{ display: 'flex', background: 'rgba(255, 255, 255, 0.06)', borderRadius: '10px', padding: '4px' }}>
+        <div style={{ display: 'flex', background: 'rgba(255, 255, 255, 0.1)', borderRadius: '14px', padding: '4px', gap: '4px' }}>
           <button
             onClick={() => setActiveTab('incoming')}
-            style={{ padding: '8px 14px', borderRadius: '8px', border: 'none', background: activeTab === 'incoming' ? 'var(--primary)' : 'transparent', color: activeTab === 'incoming' ? '#ffffff' : 'var(--text-muted)', fontSize: '0.82rem', fontWeight: '600', cursor: 'pointer' }}
+            style={{ padding: '8px 14px', borderRadius: '10px', border: 'none', background: activeTab === 'incoming' ? '#0d9488' : 'transparent', color: '#ffffff', fontSize: '0.82rem', fontWeight: '700', cursor: 'pointer' }}
           >
             📦 Incoming Lots ({incomingBatches.length})
           </button>
           <button
             onClick={() => setActiveTab('verify')}
-            style={{ padding: '8px 14px', borderRadius: '8px', border: 'none', background: activeTab === 'verify' ? 'var(--primary)' : 'transparent', color: activeTab === 'verify' ? '#ffffff' : 'var(--text-muted)', fontSize: '0.82rem', fontWeight: '600', cursor: 'pointer' }}
+            style={{ padding: '8px 14px', borderRadius: '10px', border: 'none', background: activeTab === 'verify' ? '#0d9488' : 'transparent', color: '#ffffff', fontSize: '0.82rem', fontWeight: '700', cursor: 'pointer' }}
           >
-            🔒 Confirm Handover (OTP)
+            🔒 Confirm OTP
           </button>
           <button
             onClick={() => setActiveTab('certificates')}
-            style={{ padding: '8px 14px', borderRadius: '8px', border: 'none', background: activeTab === 'certificates' ? 'var(--primary)' : 'transparent', color: activeTab === 'certificates' ? '#ffffff' : 'var(--text-muted)', fontSize: '0.82rem', fontWeight: '600', cursor: 'pointer' }}
+            style={{ padding: '8px 14px', borderRadius: '10px', border: 'none', background: activeTab === 'certificates' ? '#0d9488' : 'transparent', color: '#ffffff', fontSize: '0.82rem', fontWeight: '700', cursor: 'pointer' }}
           >
             📜 EPR Certificates ({certificates.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('reports')}
-            style={{ padding: '8px 14px', borderRadius: '8px', border: 'none', background: activeTab === 'reports' ? 'var(--primary)' : 'transparent', color: activeTab === 'reports' ? '#ffffff' : 'var(--text-muted)', fontSize: '0.82rem', fontWeight: '600', cursor: 'pointer' }}
-          >
-            📊 AI Fairness & Reports
           </button>
         </div>
       </div>
 
       {/* KPI Metrics */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '22px' }}>
-        <div className="glass-panel" style={{ padding: '16px 20px' }}>
-          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Total E-Waste Sourced</span>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--primary)', margin: '4px 0' }}>
+        <div className="glass-panel" style={{ padding: '18px 20px', borderRadius: '18px' }}>
+          <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: '600' }}>Total E-Waste Sourced</span>
+          <div style={{ fontSize: '2rem', fontWeight: '800', color: '#0d9488', margin: '4px 0' }}>
             {metrics.totalIntakeKg} kg
           </div>
-          <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>100% verified formal chain</span>
+          <span style={{ fontSize: '0.75rem', color: '#64748b' }}>100% verified formal chain</span>
         </div>
-        <div className="glass-panel" style={{ padding: '16px 20px' }}>
-          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Cash Payout to Collectors</span>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--copper)', margin: '4px 0' }}>
+        <div className="glass-panel" style={{ padding: '18px 20px', borderRadius: '18px' }}>
+          <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: '600' }}>Cash Payout to Collectors</span>
+          <div style={{ fontSize: '2rem', fontWeight: '800', color: '#d97706', margin: '4px 0' }}>
             ₹{metrics.totalPayoutINR}
           </div>
-          <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>Zero intermediaries</span>
+          <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Zero intermediaries</span>
         </div>
-        <div className="glass-panel" style={{ padding: '16px 20px' }}>
-          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Verified EPR Handover Proofs</span>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: '#38bdf8', margin: '4px 0' }}>
+        <div className="glass-panel" style={{ padding: '18px 20px', borderRadius: '18px' }}>
+          <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: '600' }}>Verified EPR Proofs</span>
+          <div style={{ fontSize: '2rem', fontWeight: '800', color: '#0284c7', margin: '4px 0' }}>
             {certificates.length}
           </div>
-          <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>SHA-256 Audit Sealed</span>
+          <span style={{ fontSize: '0.75rem', color: '#64748b' }}>SHA-256 Audit Sealed</span>
         </div>
-        <div className="glass-panel" style={{ padding: '16px 20px' }}>
-          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Government Compliance</span>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: '#10b981', margin: '4px 0' }}>
+        <div className="glass-panel" style={{ padding: '18px 20px', borderRadius: '18px' }}>
+          <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: '600' }}>Government Audit</span>
+          <div style={{ fontSize: '2rem', fontWeight: '800', color: '#059669', margin: '4px 0' }}>
             100%
           </div>
-          <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>JNARDDC / CPCB Audited</span>
+          <span style={{ fontSize: '0.75rem', color: '#64748b' }}>JNARDDC / CPCB Approved</span>
         </div>
       </div>
 
@@ -189,98 +181,96 @@ export const RecyclerDashboard = () => {
       {activeTab === 'incoming' && (
         <div className="animate-fade-in">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-            <h2 style={{ fontSize: '1.25rem', color: '#ffffff' }}>Live Matched Lots in Service Area</h2>
-            <button onClick={fetchIncomingBatches} className="btn-tactile btn-glass" style={{ padding: '6px 12px', fontSize: '0.78rem' }}>
+            <h2 style={{ fontSize: '1.3rem', color: '#0f172a' }}>Live Matched Lots in Service Area</h2>
+            <button onClick={fetchIncomingBatches} className="btn-tactile btn-glass" style={{ padding: '8px 14px', fontSize: '0.82rem' }}>
               <RefreshCw size={14} /> Refresh Feed
             </button>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '14px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
             {incomingBatches.map((batch) => (
-              <div key={batch._id} className="glass-panel" style={{ padding: '18px', borderRadius: '16px' }}>
+              <div key={batch._id} className="glass-panel" style={{ padding: '20px', borderRadius: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
                   <div>
-                    <h3 style={{ fontSize: '1.1rem', color: '#ffffff' }}>
+                    <h3 style={{ fontSize: '1.15rem', color: '#0f172a', margin: '0 0 2px 0' }}>
                       {batch.categoryName || batch.category}
                     </h3>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                    <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
                       Collector: <strong>{batch.collectorName}</strong> (+91-{batch.collectorPhone})
                     </span>
                   </div>
-                  <span className={`badge ${batch.status === 'completed' ? 'badge-primary' : 'badge-copper'}`}>
+                  <span className="badge badge-primary" style={{ background: '#ccfbf1', color: '#0f766e', border: 'none', fontWeight: '800' }}>
                     {batch.status}
                   </span>
                 </div>
 
-                <div style={{ background: 'rgba(255, 255, 255, 0.03)', borderRadius: '10px', padding: '10px', margin: '10px 0', fontSize: '0.8rem' }}>
+                <div style={{ background: '#f8fafc', borderRadius: '12px', padding: '12px', margin: '12px 0', fontSize: '0.84rem', border: '1px solid #e2e8f0' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                    <span style={{ color: 'var(--text-muted)' }}>Lot Weight:</span>
-                    <strong style={{ color: '#ffffff' }}>{batch.weightKg} kg</strong>
+                    <span style={{ color: '#64748b' }}>Lot Weight:</span>
+                    <strong style={{ color: '#0f172a' }}>{batch.weightKg} kg</strong>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                    <span style={{ color: 'var(--text-muted)' }}>Estimated Metals:</span>
-                    <span style={{ color: 'var(--copper)' }}>
+                    <span style={{ color: '#64748b' }}>Estimated Metals:</span>
+                    <span style={{ color: '#d97706', fontWeight: '700' }}>
                       {batch.estimatedMetals?.lithium_g ? `${batch.estimatedMetals.lithium_g}g Li` : ''}{' '}
                       {batch.estimatedMetals?.copper_g ? `${batch.estimatedMetals.copper_g}g Cu` : ''}
                     </span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: 'var(--text-muted)' }}>Total Cash Payout:</span>
-                    <strong style={{ color: 'var(--primary)', fontSize: '0.95rem' }}>
+                    <span style={{ color: '#64748b' }}>Total Cash Payout:</span>
+                    <strong style={{ color: '#0d9488', fontSize: '1rem' }}>
                       ₹{batch.grandTotal || batch.totalAgreedPrice}
                     </strong>
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button
-                    onClick={() => {
-                      setSelectedBatch(batch);
-                      setVerifiedWeight(batch.weightKg);
-                      setActiveTab('verify');
-                    }}
-                    className="btn-tactile btn-primary"
-                    style={{ flex: 1, padding: '10px', fontSize: '0.85rem' }}
-                  >
-                    Confirm Handover (OTP)
-                  </button>
-                </div>
+                <button
+                  onClick={() => {
+                    setSelectedBatch(batch);
+                    setVerifiedWeight(batch.weightKg);
+                    setActiveTab('verify');
+                  }}
+                  className="btn-tactile btn-primary"
+                  style={{ width: '100%', padding: '12px', fontSize: '0.9rem' }}
+                >
+                  Confirm Handover (OTP)
+                </button>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* TAB 2: CONFIRM HANDOVER & OTP VERIFICATION */}
+      {/* TAB 2: VERIFY HANDOVER */}
       {activeTab === 'verify' && selectedBatch && (
         <div className="animate-fade-in" style={{ maxWidth: '580px', margin: '0 auto' }}>
-          <div className="glass-panel" style={{ padding: '24px', borderRadius: '20px' }}>
+          <div className="glass-panel" style={{ padding: '28px', borderRadius: '24px' }}>
             <div style={{ textAlign: 'center', marginBottom: '18px' }}>
-              <span className="badge badge-primary" style={{ marginBottom: '6px' }}>PROOF-OF-HANDOVER LOCK</span>
-              <h2 style={{ fontSize: '1.4rem', color: '#ffffff' }}>Confirm Lot Receipt & Payout</h2>
-              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+              <span className="badge badge-primary" style={{ background: '#ccfbf1', color: '#0f766e', border: 'none', marginBottom: '6px' }}>PROOF-OF-HANDOVER</span>
+              <h2 style={{ fontSize: '1.45rem', color: '#0f172a' }}>Confirm Lot Receipt & Payout</h2>
+              <p style={{ fontSize: '0.84rem', color: '#64748b' }}>
                 Ask collector <strong>{selectedBatch.collectorName}</strong> for the 4-digit OTP shown on their screen.
               </p>
             </div>
 
             <form onSubmit={handleVerifyHandover}>
-              <div style={{ background: 'rgba(255, 255, 255, 0.04)', borderRadius: '12px', padding: '14px', marginBottom: '16px', fontSize: '0.84rem' }}>
+              <div style={{ background: '#f8fafc', borderRadius: '14px', padding: '16px', marginBottom: '18px', border: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Batch ID:</span>
-                  <strong>{selectedBatch._id}</strong>
+                  <span style={{ color: '#64748b' }}>Batch ID:</span>
+                  <strong style={{ color: '#0f172a' }}>{selectedBatch._id}</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Material:</span>
-                  <strong>{selectedBatch.categoryName || selectedBatch.category}</strong>
+                  <span style={{ color: '#64748b' }}>Material:</span>
+                  <strong style={{ color: '#0f172a' }}>{selectedBatch.categoryName || selectedBatch.category}</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Agreed Cash Payout:</span>
-                  <strong style={{ color: 'var(--primary)' }}>₹{selectedBatch.grandTotal || selectedBatch.totalAgreedPrice}</strong>
+                  <span style={{ color: '#64748b' }}>Agreed Cash Payout:</span>
+                  <strong style={{ color: '#0d9488' }}>₹{selectedBatch.grandTotal || selectedBatch.totalAgreedPrice}</strong>
                 </div>
               </div>
 
               <div style={{ marginBottom: '16px' }}>
-                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>
+                <label style={{ fontSize: '0.82rem', color: '#64748b', fontWeight: '700', display: 'block', marginBottom: '6px' }}>
                   Verified Weight on Certified Recycler Scale (kg)
                 </label>
                 <input
@@ -288,12 +278,12 @@ export const RecyclerDashboard = () => {
                   step="0.1"
                   value={verifiedWeight}
                   onChange={(e) => setVerifiedWeight(e.target.value)}
-                  style={{ background: 'rgba(255, 255, 255, 0.08)', border: '1px solid var(--border-glass)', borderRadius: '10px', color: '#ffffff', fontSize: '1.1rem', padding: '10px 14px', width: '100%', outline: 'none' }}
+                  style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', color: '#0f172a', fontSize: '1.1rem', padding: '12px 16px', width: '100%', outline: 'none' }}
                 />
               </div>
 
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>
+              <div style={{ marginBottom: '22px' }}>
+                <label style={{ fontSize: '0.82rem', color: '#64748b', fontWeight: '700', display: 'block', marginBottom: '6px' }}>
                   Collector 4-Digit Handover OTP (Default: 4892 or 1234)
                 </label>
                 <input
@@ -302,7 +292,7 @@ export const RecyclerDashboard = () => {
                   value={handoverOtp}
                   onChange={(e) => setHandoverOtp(e.target.value)}
                   placeholder="e.g. 4892"
-                  style={{ background: 'rgba(255, 255, 255, 0.08)', border: '2px solid var(--primary)', borderRadius: '12px', color: '#ffffff', fontSize: '1.6rem', textAlign: 'center', letterSpacing: '0.3em', padding: '12px', width: '100%', outline: 'none' }}
+                  style={{ background: '#f8fafc', border: '2px solid #0d9488', borderRadius: '14px', color: '#0f172a', fontSize: '1.8rem', textAlign: 'center', letterSpacing: '0.3em', padding: '12px', width: '100%', outline: 'none' }}
                 />
               </div>
 
@@ -320,89 +310,44 @@ export const RecyclerDashboard = () => {
         </div>
       )}
 
-      {/* TAB 3: VERIFIABLE EPR CERTIFICATES */}
+      {/* TAB 3: CERTIFICATES */}
       {activeTab === 'certificates' && (
         <div className="animate-fade-in">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <h2 style={{ fontSize: '1.25rem', color: '#ffffff' }}>Issued Extended Producer Responsibility (EPR) Certificates</h2>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Corporate Compliance Ready</span>
+            <h2 style={{ fontSize: '1.3rem', color: '#0f172a' }}>Issued Extended Producer Responsibility (EPR) Certificates</h2>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {certificates.map((cert) => (
-              <div key={cert._id} className="glass-panel" style={{ padding: '18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+              <div key={cert._id} className="glass-panel" style={{ padding: '20px', borderRadius: '18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontWeight: '800', color: '#ffffff' }}>{cert.certificateNumber}</span>
-                    <span className="badge badge-primary">VERIFIED ACTIVE</span>
+                    <span style={{ fontWeight: '800', color: '#0f172a', fontSize: '1.05rem' }}>{cert.certificateNumber}</span>
+                    <span className="badge badge-primary" style={{ background: '#ccfbf1', color: '#0f766e', border: 'none' }}>VERIFIED ACTIVE</span>
                   </div>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: '4px 0' }}>
-                    Material: <strong style={{ color: 'var(--copper)' }}>{cert.materialType} ({cert.weightKg} kg)</strong> · Sourced from {cert.collectorName}
+                  <p style={{ fontSize: '0.82rem', color: '#64748b', margin: '4px 0' }}>
+                    Material: <strong style={{ color: '#d97706' }}>{cert.materialType} ({cert.weightKg} kg)</strong> · Sourced from {cert.collectorName}
                   </p>
-                  <p style={{ fontSize: '0.72rem', color: 'var(--text-dim)', fontFamily: 'monospace' }}>
+                  <p style={{ fontSize: '0.72rem', color: '#94a3b8', fontFamily: 'monospace' }}>
                     SHA-256: {cert.hash?.slice(0, 32)}...
                   </p>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <button
-                    onClick={() => setViewingCertificate(cert)}
-                    className="btn-tactile btn-primary"
-                    style={{ padding: '8px 16px', fontSize: '0.82rem' }}
-                  >
-                    <FileText size={16} /> View & Download PDF
-                  </button>
-                </div>
+                <button
+                  onClick={() => setViewingCertificate(cert)}
+                  className="btn-tactile btn-primary"
+                  style={{ padding: '10px 18px', fontSize: '0.85rem' }}
+                >
+                  <FileText size={16} /> View & Download Certificate
+                </button>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* TAB 4: SIMPLE REPORTS & AI PRICE FAIRNESS CHECKER */}
-      {activeTab === 'reports' && (
-        <div className="animate-fade-in" style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <div className="glass-panel" style={{ padding: '24px', borderRadius: '18px', marginBottom: '20px' }}>
-            <h2 style={{ fontSize: '1.25rem', color: '#ffffff', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <AlertTriangle size={20} color="var(--copper)" />
-              AI Price Fairness & Anti-Exploitation Anomaly Detector
-            </h2>
-            <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
-              Our machine learning engine flags predatory prices from informal middlemen to protect collectors and guarantee legitimate market value.
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '12px', padding: '14px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <strong style={{ color: 'var(--danger)', fontSize: '0.9rem' }}>🚨 Flagged Predatory Offer Detected</strong>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Dharavi Cluster</span>
-                </div>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-main)', marginTop: '4px' }}>
-                  An informal buyer offered ₹120/kg for Lithium-Ion batteries. JNARDDC fair benchmark is ₹260/kg.
-                  <strong> Deal blocked by Scrap Sathi anti-exploitation filter.</strong>
-                </p>
-              </div>
-
-              <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '12px', padding: '14px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <strong style={{ color: 'var(--primary)', fontSize: '0.9rem' }}>✅ Fair Price Compliance: 98.4%</strong>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Last 30 Days</span>
-                </div>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-main)', marginTop: '4px' }}>
-                  All deals conducted on Scrap Sathi were within ±8% of JNARDDC fair benchmarks. Collectors earned an average of +156% higher income compared to burning/acid scrap dealers.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Certificate Viewer Modal */}
       {viewingCertificate && (
-        <EPRCertificateModal
-          certificate={viewingCertificate}
-          onClose={() => setViewingCertificate(null)}
-        />
+        <EPRCertificateModal certificate={viewingCertificate} onClose={() => setViewingCertificate(null)} />
       )}
     </div>
   );

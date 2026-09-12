@@ -7,7 +7,7 @@ export const AuthModal = () => {
   const { authModalOpen, setAuthModalOpen, loginWithPhoneOtp, loginWithGoogle } = useAuth();
   const { t } = useLanguage();
 
-  const [tab, setTab] = useState('phone'); // 'phone' | 'password' | 'register' | 'forgot'
+  const [tab, setTab] = useState('phone');
   const [phone, setPhone] = useState('9876543210');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
@@ -15,12 +15,8 @@ export const AuthModal = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Form states for password/registration
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('password123');
-  const [name, setName] = useState('');
-  const [role, setRole] = useState('collector');
-  const [cpcbNumber, setCpcbNumber] = useState('');
 
   if (!authModalOpen) return null;
 
@@ -42,12 +38,11 @@ export const AuthModal = () => {
       if (data.success) {
         setOtpSent(true);
         setDevOtp(data.devOtp || '1234');
-        setOtp(data.devOtp || '1234'); // Auto-fill for friction-free judge experience!
+        setOtp(data.devOtp || '1234');
       } else {
         setError(data.message || 'Failed to send OTP');
       }
     } catch (err) {
-      // Local fallback
       setOtpSent(true);
       setDevOtp('1234');
       setOtp('1234');
@@ -107,8 +102,8 @@ export const AuthModal = () => {
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.85)',
-        backdropFilter: 'blur(8px)',
+        backgroundColor: 'rgba(15, 23, 42, 0.65)',
+        backdropFilter: 'blur(6px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -117,43 +112,50 @@ export const AuthModal = () => {
       }}
     >
       <div
-        className="glass-panel"
         style={{
           maxWidth: '460px',
           width: '100%',
           padding: '28px',
-          borderRadius: '20px',
+          borderRadius: '24px',
           position: 'relative',
-          border: '1px solid var(--border-glow)'
+          border: '1px solid #cbd5e1',
+          background: '#ffffff',
+          boxShadow: '0 20px 50px rgba(15, 23, 42, 0.2)'
         }}
       >
         <button
           onClick={() => setAuthModalOpen(false)}
           style={{
             position: 'absolute',
-            top: '16px',
-            right: '16px',
-            background: 'none',
+            top: '18px',
+            right: '18px',
+            background: '#f1f5f9',
             border: 'none',
-            color: 'var(--text-muted)',
+            borderRadius: '50%',
+            width: '32px',
+            height: '32px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#64748b',
             cursor: 'pointer'
           }}
         >
-          <X size={20} />
+          <X size={18} />
         </button>
 
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-          <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'var(--primary-glow)', border: '1px solid var(--primary)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
-            <Shield size={26} color="var(--primary)" />
+          <div style={{ width: '50px', height: '50px', borderRadius: '16px', background: '#162544', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px' }}>
+            <Shield size={28} color="#eab308" />
           </div>
-          <h2 style={{ fontSize: '1.4rem', color: '#ffffff' }}>{t('loginTitle')}</h2>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+          <h2 style={{ fontSize: '1.4rem', color: '#0f172a', margin: 0 }}>{t('loginTitle')}</h2>
+          <p style={{ fontSize: '0.82rem', color: '#64748b', margin: '2px 0 0 0' }}>
             Ministry of Mines (MoM) · JNARDDC · SIH 2026
           </p>
         </div>
 
         {/* Tab Selection */}
-        <div style={{ display: 'flex', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '10px', padding: '4px', marginBottom: '18px' }}>
+        <div style={{ display: 'flex', background: '#f1f5f9', borderRadius: '12px', padding: '4px', marginBottom: '18px' }}>
           <button
             onClick={() => setTab('phone')}
             style={{
@@ -161,10 +163,10 @@ export const AuthModal = () => {
               padding: '8px',
               borderRadius: '8px',
               border: 'none',
-              background: tab === 'phone' ? 'var(--primary)' : 'transparent',
-              color: tab === 'phone' ? '#ffffff' : 'var(--text-muted)',
+              background: tab === 'phone' ? '#0d9488' : 'transparent',
+              color: tab === 'phone' ? '#ffffff' : '#64748b',
               fontSize: '0.82rem',
-              fontWeight: '600',
+              fontWeight: '700',
               cursor: 'pointer'
             }}
           >
@@ -177,30 +179,14 @@ export const AuthModal = () => {
               padding: '8px',
               borderRadius: '8px',
               border: 'none',
-              background: tab === 'password' ? 'var(--primary)' : 'transparent',
-              color: tab === 'password' ? '#ffffff' : 'var(--text-muted)',
+              background: tab === 'password' ? '#0d9488' : 'transparent',
+              color: tab === 'password' ? '#ffffff' : '#64748b',
               fontSize: '0.82rem',
-              fontWeight: '600',
+              fontWeight: '700',
               cursor: 'pointer'
             }}
           >
             🔑 Password
-          </button>
-          <button
-            onClick={() => setTab('register')}
-            style={{
-              flex: 1,
-              padding: '8px',
-              borderRadius: '8px',
-              border: 'none',
-              background: tab === 'register' ? 'var(--primary)' : 'transparent',
-              color: tab === 'register' ? '#ffffff' : 'var(--text-muted)',
-              fontSize: '0.82rem',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            ✍️ Sign Up
           </button>
         </div>
 
@@ -210,23 +196,23 @@ export const AuthModal = () => {
           </div>
         )}
 
-        {/* 1. Phone OTP Form */}
+        {/* Phone OTP Form */}
         {tab === 'phone' && (
           <div>
             {!otpSent ? (
               <form onSubmit={handleSendOtp}>
-                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>
+                <label style={{ fontSize: '0.82rem', color: '#64748b', fontWeight: '700', display: 'block', marginBottom: '6px' }}>
                   {t('phoneLabel')}
                 </label>
-                <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255, 255, 255, 0.06)', borderRadius: '10px', border: '1px solid var(--border-glass)', padding: '0 12px', marginBottom: '16px' }}>
-                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginRight: '8px' }}>+91</span>
+                <div style={{ display: 'flex', alignItems: 'center', background: '#f8fafc', borderRadius: '12px', border: '1px solid #cbd5e1', padding: '0 14px', marginBottom: '16px' }}>
+                  <span style={{ fontSize: '0.95rem', color: '#64748b', fontWeight: '700', marginRight: '8px' }}>+91</span>
                   <input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="9876543210"
                     maxLength={10}
-                    style={{ background: 'transparent', border: 'none', color: '#ffffff', fontSize: '1.05rem', padding: '12px 0', width: '100%', outline: 'none' }}
+                    style={{ background: 'transparent', border: 'none', color: '#0f172a', fontSize: '1.1rem', fontWeight: '700', padding: '12px 0', width: '100%', outline: 'none' }}
                   />
                 </div>
                 <button type="submit" disabled={loading} className="btn-tactile btn-primary" style={{ width: '100%' }}>
@@ -235,10 +221,10 @@ export const AuthModal = () => {
               </form>
             ) : (
               <form onSubmit={handleVerifyOtp}>
-                <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.3)', marginBottom: '14px', fontSize: '0.82rem', color: 'var(--primary)' }}>
+                <div style={{ background: '#d1fae5', padding: '10px', borderRadius: '10px', border: '1px solid #a7f3d0', marginBottom: '14px', fontSize: '0.84rem', color: '#047857', fontWeight: '700' }}>
                   ✅ SMS simulated to +91-{phone}! Code: <strong>{devOtp || '1234'}</strong>
                 </div>
-                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>
+                <label style={{ fontSize: '0.82rem', color: '#64748b', fontWeight: '700', display: 'block', marginBottom: '6px' }}>
                   {t('enterOtpLabel')}
                 </label>
                 <input
@@ -247,7 +233,7 @@ export const AuthModal = () => {
                   onChange={(e) => setOtp(e.target.value)}
                   placeholder="4-digit code"
                   maxLength={4}
-                  style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid var(--primary)', borderRadius: '10px', color: '#ffffff', fontSize: '1.4rem', letterSpacing: '0.3em', textAlign: 'center', padding: '10px', width: '100%', outline: 'none', marginBottom: '16px' }}
+                  style={{ background: '#f8fafc', border: '2px solid #0d9488', borderRadius: '12px', color: '#0f172a', fontSize: '1.5rem', fontWeight: '800', letterSpacing: '0.3em', textAlign: 'center', padding: '10px', width: '100%', outline: 'none', marginBottom: '16px' }}
                 />
                 <button type="submit" disabled={loading} className="btn-tactile btn-primary" style={{ width: '100%' }}>
                   <KeyRound size={18} /> {loading ? 'Verifying...' : t('verifyAndLogin')}
@@ -257,10 +243,10 @@ export const AuthModal = () => {
           </div>
         )}
 
-        {/* 2. Password Login */}
+        {/* Password Form */}
         {tab === 'password' && (
           <form onSubmit={handlePasswordLogin}>
-            <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>
+            <label style={{ fontSize: '0.82rem', color: '#64748b', fontWeight: '700', display: 'block', marginBottom: '6px' }}>
               Email or Mobile Number
             </label>
             <input
@@ -268,9 +254,9 @@ export const AuthModal = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="ramesh.collector@scrapsathi.in"
-              style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid var(--border-glass)', borderRadius: '10px', color: '#ffffff', fontSize: '0.95rem', padding: '10px 12px', width: '100%', outline: 'none', marginBottom: '12px' }}
+              style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', color: '#0f172a', fontSize: '0.95rem', padding: '10px 14px', width: '100%', outline: 'none', marginBottom: '14px' }}
             />
-            <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>
+            <label style={{ fontSize: '0.82rem', color: '#64748b', fontWeight: '700', display: 'block', marginBottom: '6px' }}>
               Password
             </label>
             <input
@@ -278,7 +264,7 @@ export const AuthModal = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="password123"
-              style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid var(--border-glass)', borderRadius: '10px', color: '#ffffff', fontSize: '0.95rem', padding: '10px 12px', width: '100%', outline: 'none', marginBottom: '16px' }}
+              style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', color: '#0f172a', fontSize: '0.95rem', padding: '10px 14px', width: '100%', outline: 'none', marginBottom: '16px' }}
             />
             <button type="submit" disabled={loading} className="btn-tactile btn-primary" style={{ width: '100%' }}>
               <Lock size={18} /> Log In with Password
@@ -286,18 +272,14 @@ export const AuthModal = () => {
           </form>
         )}
 
-        {/* 3. Social Google Auth */}
+        {/* Google Mock Button */}
         <div style={{ marginTop: '16px', textAlign: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '14px 0' }}>
-            <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border-glass)' }} />
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>OR</span>
-            <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border-glass)' }} />
+            <hr style={{ flex: 1, border: 'none', borderTop: '1px solid #e2e8f0' }} />
+            <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: '700' }}>OR</span>
+            <hr style={{ flex: 1, border: 'none', borderTop: '1px solid #e2e8f0' }} />
           </div>
-          <button
-            onClick={handleGoogleMock}
-            className="btn-tactile btn-glass"
-            style={{ width: '100%', fontSize: '0.88rem', gap: '10px' }}
-          >
+          <button onClick={handleGoogleMock} className="btn-tactile btn-glass" style={{ width: '100%', fontSize: '0.88rem', gap: '10px' }}>
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />

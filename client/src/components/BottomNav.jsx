@@ -1,47 +1,76 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { TrendingUp, Camera, Users, Award, ShieldAlert, User, DollarSign, ListOrdered } from 'lucide-react';
+import { TrendingUp, Camera, Package, ShieldAlert, User, Wallet, Sparkles } from 'lucide-react';
 
 export const BottomNav = ({ activeTab, setActiveTab }) => {
   const { t } = useLanguage();
 
   const navItems = [
-    { id: 'price_board', label: t('navPriceBoard'), icon: TrendingUp },
-    { id: 'scan_identify', label: t('navScan'), icon: Camera, highlight: true },
-    { id: 'best_match', label: t('navBestMatch'), icon: ListOrdered },
-    { id: 'pool_team', label: t('navPool'), icon: Users },
-    { id: 'my_khata', label: t('navKhata'), icon: DollarSign },
-    { id: 'safety_tips', label: t('navSafety'), icon: ShieldAlert },
-    { id: 'my_profile', label: t('navProfile'), icon: User }
+    { id: 'price_board', label: t('navPriceBoard') || 'Rates', icon: TrendingUp },
+    { id: 'pool_team', label: t('navPool') || 'Batches', icon: Package },
+    { id: 'scan_identify', label: t('navScan') || 'Scan', icon: Camera, highlight: true },
+    { id: 'my_khata', label: t('navKhata') || 'Earnings', icon: Wallet },
+    { id: 'my_profile', label: t('navProfile') || 'Profile', icon: User }
   ];
 
   return (
     <nav
-      className="glass-panel"
       style={{
         position: 'fixed',
         bottom: 0,
         left: 0,
         right: 0,
         margin: '0 auto',
-        maxWidth: '700px',
-        padding: '8px 12px',
+        maxWidth: '680px',
+        padding: '8px 16px 12px 16px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-around',
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
-        borderTop: '1px solid var(--border-glow)',
-        background: 'rgba(8, 12, 20, 0.94)',
-        backdropFilter: 'blur(20px)',
+        borderTopLeftRadius: '24px',
+        borderTopRightRadius: '24px',
+        borderTop: '1px solid #e2e8f0',
+        background: '#ffffff',
         zIndex: 1000,
-        boxShadow: '0 -10px 30px rgba(0, 0, 0, 0.8)'
+        boxShadow: '0 -10px 30px rgba(15, 23, 42, 0.08)'
       }}
     >
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = activeTab === item.id;
         const isHighlight = item.highlight;
+
+        if (isHighlight) {
+          return (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              style={{
+                position: 'relative',
+                top: '-16px',
+                width: '60px',
+                height: '60px',
+                borderRadius: '50%',
+                background: '#162544',
+                border: '4px solid #ffffff',
+                boxShadow: '0 8px 24px rgba(22, 37, 68, 0.3)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#eab308',
+                cursor: 'pointer',
+                transition: 'all 0.22s ease'
+              }}
+            >
+              <Camera size={24} color="#eab308" />
+              <span style={{ fontSize: '0.62rem', fontWeight: '700', color: '#ffffff', marginTop: '1px' }}>
+                {item.label}
+              </span>
+            </button>
+          );
+        }
 
         return (
           <button
@@ -52,23 +81,18 @@ export const BottomNav = ({ activeTab, setActiveTab }) => {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '4px',
-              background: isHighlight
-                ? isActive
-                  ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-                  : 'rgba(16, 185, 129, 0.2)'
-                : 'transparent',
-              border: isHighlight ? '1px solid var(--primary)' : 'none',
-              borderRadius: isHighlight ? '16px' : '10px',
-              padding: isHighlight ? '8px 12px' : '6px 8px',
-              color: isActive ? (isHighlight ? '#ffffff' : 'var(--primary)') : 'var(--text-muted)',
+              gap: '3px',
+              background: isActive ? '#ccfbf1' : 'transparent',
+              border: 'none',
+              borderRadius: '20px',
+              padding: '6px 14px',
+              color: isActive ? '#0d9488' : '#64748b',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              minWidth: isHighlight ? '64px' : '50px'
+              transition: 'all 0.2s ease'
             }}
           >
-            <Icon size={isHighlight ? 22 : 18} color={isActive ? (isHighlight ? '#ffffff' : '#10b981') : '#94a3b8'} />
-            <span style={{ fontSize: '0.65rem', fontWeight: isActive ? '700' : '500', whiteSpace: 'nowrap' }}>
+            <Icon size={20} color={isActive ? '#0d9488' : '#64748b'} />
+            <span style={{ fontSize: '0.7rem', fontWeight: isActive ? '800' : '600', whiteSpace: 'nowrap' }}>
               {item.label}
             </span>
           </button>

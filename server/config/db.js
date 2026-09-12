@@ -1,4 +1,11 @@
 const mongoose = require('mongoose');
+const dns = require('dns');
+
+// Fix for Windows / Node.js c-ares DNS SRV lookup issues (querySrv ECONNREFUSED)
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4']);
+} catch (e) {}
+
 const { BENCHMARK_PRICES_INR, MINERAL_COEFFICIENTS, ROLES, BATCH_STATUS } = require('./constants');
 const crypto = require('crypto');
 
